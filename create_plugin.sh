@@ -42,7 +42,10 @@ if [ "$#" = "2" ]; then
 	if [ "$PLUGIN_GUI" = "" ]; then 
 		PLUGIN_GUI=`basename $GUI_TEMPLATE .tmpl`.h
 	fi
-	create_widget.sh $GUI_TEMPLATE $PLUGIN_GUI
+	CREATE_WIDGET_PATH=`which create_widget.sh`
+	if [ "$CREATE_WIDGET_PATH" = "" ]; then CREATE_WIDGET_PATH="./create_widget.sh"; fi
+	echo "$CREATE_WIDGET_PATH $GUI_TEMPLATE $PLUGIN_GUI"
+	eval "$CREATE_WIDGET_PATH $GUI_TEMPLATE $PLUGIN_GUI"
 fi
 
 echo "create $PLUGIN_HEADER ..."
@@ -327,7 +330,7 @@ then
 		i=$[i+1]
 	done
 	echo ""
-fi >> $FUNC_CPP
+fi > $FUNC_CPP
 
 echo "create $PRO_FILE ..."
 if [ "1" ]
@@ -336,7 +339,8 @@ then
 	echo -e "TEMPLATE\t= lib"
 	echo -e "CONFIG\t+= qt plugin warn_off"
 	echo -e "#CONFIG\t+= x86_64"
-	echo -e "INCLUDEPATH\t+= $V3D_MAIN_PATH/basic_c_fun"
+	echo -e "V3DMAINPATH = $V3D_MAIN_PATH"
+	echo -e "INCLUDEPATH\t+= \$\$V3DMAINPATH/basic_c_fun"
 	echo ""
 	echo -e "HEADERS\t= $PLUGIN_HEADER"
 	echo -e "HEADERS\t+= $FUNC_HEADER"
@@ -344,10 +348,10 @@ then
 	echo ""
 	echo -e "SOURCES\t= $PLUGIN_CPP"
 	echo -e "SOURCES\t+= $FUNC_CPP"
-	echo -e "SOURCES\t+= $V3D_MAIN_PATH/basic_c_fun/v3d_message.cpp"
+	echo -e "SOURCES\t+= \$\$V3DMAINPATH/basic_c_fun/v3d_message.cpp"
 	echo ""
 	echo -e "TARGET\t= \$\$qtLibraryTarget($PLUGIN_NAME)"
-	echo -e "DESTDIR\t= ~/Applications/v3d/plugins/$PLUGIN_NAME/"
-fi >> $PRO_FILE
+	echo -e "#DESTDIR\t= ~/Applications/v3d/plugins/$PLUGIN_NAME/"
+fi > $PRO_FILE
 
 echo "done"

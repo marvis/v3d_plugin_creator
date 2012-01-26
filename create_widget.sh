@@ -145,7 +145,7 @@ if [ 1 ]; then
 				echo -e "\tQ_OBJECT"
 				echo ""
 				echo "public:"
-				echo -e "\t$CLASS_NAME(V3DPluginCallback2 &callback, QWidget * parent) : QWidget(parent)"
+				echo -e "\t$CLASS_NAME(V3DPluginCallback2 &callback, QWidget * parent) : $CLASS_TYPE(parent)"
 				echo -e "\t{"
 				echo -e "\t\tthis->callback = &callback;"
 				echo -e "\t\tcurwin = callback.currentImageWindow();"
